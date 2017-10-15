@@ -39,7 +39,7 @@ void TDiagram::S()
 		}
 		else if (t == Tint64) { sc->SetUK(uk1); sc->SetLine(line1); variableDeclaration(); }
 		else if (t == Tint) { sc->SetUK(uk1); sc->SetLine(line1); variableDeclaration(); }
-		else if (t == Tid) { sc->SetUK(uk1); sc->SetLine(line1);  oneOperator(); }
+		else if (t == Tid || t == Tfor || t == Treturn) { sc->SetUK(uk1); sc->SetLine(line1);  oneOperator();}
 		else sc->paintError("(S) Ошибка в программе\0", l);
 	}
 }
@@ -83,6 +83,7 @@ void TDiagram::functionDeclaration()
 void TDiagram::variableDeclaration() {
 	LEX l;
 	int t;
+	int uk1 = sc->GetUK();
 	t = sc->scaner(l);
 	if (t != Tint && t != Tint64)
 		sc->paintError("(variableDeclaration) Ожидался символ 'int' или 'int64'\0", l);
@@ -96,7 +97,19 @@ void TDiagram::variableDeclaration() {
 		if (t != Tassignment && t != TopenArray)
 			sc->paintError("(variableDeclaration) Ожидался символ '=' или '['\0", l);
 		if (t == Tassignment)
-			expression();
+		{
+			uk1 = sc->GetUK();
+			t = sc->scaner(l);
+			if (t == Tid)
+			{
+				sc->SetUK(uk1);
+				oneOperator();
+				break;
+			}
+			else if (t == Tconst10 || t == Tconst16) {}
+			else
+				expression();
+		}		
 		else
 		{
 			t = sc->scaner(l);
@@ -104,7 +117,7 @@ void TDiagram::variableDeclaration() {
 				sc->paintError("(variableDeclaration) Ожидалась символ Tconst10\0", l);
 			t = sc->scaner(l);
 			if (t != TcloseArray)
-				sc->paintError("(variableDeclaration) Ожидался символ '['\0", l);
+				sc->paintError("(variableDeclaration) Ожидался символ ']'\0", l);
 
 			t = sc->scaner(l);
 			if (t == Tsemicolon) break;
@@ -112,6 +125,7 @@ void TDiagram::variableDeclaration() {
 			if (t != Tassignment)
 				sc->paintError("(variableDeclaration) Ожидался символ '='\0", l);
 
+			t = sc->scaner(l);
 			if (t != Topenblock)
 				sc->paintError("(variableDeclaration) Ожидался символ '{'\0", l);
 
@@ -169,30 +183,51 @@ void TDiagram::oneOperator()
 {
 	LEX l;
 	int t;
-	t = sc->scaner(l);
 	int uk1 = sc->GetUK();
 	int line1 = sc->GetLine();
+	t = sc->scaner(l);	
 	switch (t)
 	{
 		case Tfor:
 		{
 			t = sc->scaner(l);
-			if(t!=Topenbracket) sc->paintError("(oneOperator) Ожидался символ '('\0", l);
+			if(t!=Topenbracket) 
+				sc->paintError("(oneOperator) Ожидался символ '('\0", l);
 			t = sc->scaner(l);
-			if (t != Tid) sc->paintError("(oneOperator) Ожидался идентификатор\0", l);
+			if (t != Tint)
+				sc->paintError("(oneOperator) Ожидался идентификатор\0", l);
 			t = sc->scaner(l);
-			if (t != Tassignment) sc->paintError("(oneOperator) Ожидался символ '='\0", l);
+			if (t != Tid) 
+				sc->paintError("(oneOperator) Ожидался идентификатор\0", l);
+			t = sc->scaner(l);
+			if (t != Tassignment) 
+				sc->paintError("(oneOperator) Ожидался символ '='\0", l);
 			expression();
+			t = sc->scaner(l);
+			if (t != Tsemicolon) 
+				sc->paintError("(oneOperator) Ожидался символ ';'\0", l);
+
+			expression();
+
 			t = sc->scaner(l);
 			if (t != Tsemicolon) sc->paintError("(oneOperator) Ожидался символ ';'\0", l);
-			expression();
+			
+			uk1 = sc->GetUK();
 			t = sc->scaner(l);
-			if (t != Tsemicolon) sc->paintError("(oneOperator) Ожидался символ ';'\0", l);
-			t = sc->scaner(l);
-			if (t != Tid) sc->paintError("(oneOperator) Ожидался идентификатор\0", l);
-			expression();
-			t = sc->scaner(l);
+			if (t == Tminusminus || t == Tplusplus)
+			{
+				t = sc->scaner(l);
+				if(t != Tid)
+					sc->paintError("(oneOperator) Ожидался идентификатор\0", l);
+			}
+			else
+			{
+				sc->SetUK(uk1);
+				expression();
+			}					
+			t = sc->scaner(l);			
 			if (t != Tclosebracket) sc->paintError("(oneOperator) Ожидался символ ')'\0", l);
+
 			oneOperator();
 			break;
 		}
@@ -283,155 +318,133 @@ void TDiagram::callFunction()
 
 void TDiagram::expression()
 {
-	LEX l;
-	int t;	
 	expression2();
 	int uk1 = sc->GetUK();
-	int line1 = sc->GetLine();
+	LEX l;
+	int t;	
 	t = sc->scaner(l);
 	while (t == Tor) {
 		expression2();
 		uk1 = sc->GetUK();
-		line1 = sc->GetLine();
 		t = sc->scaner(l);
 	}
 	sc->SetUK(uk1);
-	sc->SetLine(line1);
 }
 
 void TDiagram::expression2()
 {
-
-	LEX l;
-	int t;
 	expression3();
 	int uk1 = sc->GetUK();
-	int line1 = sc->GetLine();
+	LEX l;
+	int t;
 	t = sc->scaner(l);
-	while (t == Tand) {
-		expression3();		
+	while (t == Tand) {	
+		expression3();
 		uk1 = sc->GetUK();
-		line1 = sc->GetLine();
 		t = sc->scaner(l);
 	}
 	sc->SetUK(uk1);
-	sc->SetLine(line1);
-
 }
 void TDiagram::expression3()
 {
-	LEX l;
-	int t;
 	expression4();
 	int uk1 = sc->GetUK();
-	int line1 = sc->GetLine();
+	LEX l;
+	int t;
+
+	
 	t = sc->scaner(l);
 	while (t == Tequal || t == Tinequal) {
 		expression4();
 		uk1 = sc->GetUK();
-		line1 = sc->GetLine();
 		t = sc->scaner(l);
 	}
 	sc->SetUK(uk1);
-	sc->SetLine(line1);
 }
 void TDiagram::expression4()
 {
-	LEX l;
-	int t;
 	expression5();
 	int uk1 = sc->GetUK();
-	int line1 = sc->GetLine();
+	LEX l;
+	int t;
+	
 	t = sc->scaner(l);
 	while (t == Tmore || t == Tless || t == Tequalmore || t == Tequalless) {
 		expression5();
 		uk1 = sc->GetUK();
-		line1 = sc->GetLine();
 		t = sc->scaner(l);
 	}
 	sc->SetUK(uk1);
-	sc->SetLine(line1);
 }
 void TDiagram::expression5()
 {
-	LEX l;
-	int t;
 	expression6();
 	int uk1 = sc->GetUK();
-	int line1 = sc->GetLine();
+	LEX l;
+	int t;
+	
 	t = sc->scaner(l);
 	while (t == Tplus || t == Tminus) {
 		expression6();
 		uk1 = sc->GetUK();
-		line1 = sc->GetLine();
 		t = sc->scaner(l);
 	}
 	sc->SetUK(uk1);
-	sc->SetLine(line1);
 }
 void TDiagram::expression6()
 {
-	LEX l;
-	int t;
 	expression7();
 	int uk1 = sc->GetUK();
-	int line1 = sc->GetLine();
+	LEX l;
+	int t;
+	
 	t = sc->scaner(l);
 	while (t == Tmul || t == Tdiv || t == Tpercent) {
 		expression7();
 		uk1 = sc->GetUK();
-		line1 = sc->GetLine();
 		t = sc->scaner(l);
 	}
 	sc->SetUK(uk1);
-	sc->SetLine(line1);
 }
 void TDiagram::expression7()
 {
-	LEX l;
-	int t;
-	expression8();
 	int uk1 = sc->GetUK();
-	int line1 = sc->GetLine();
+	LEX l;
+	int t;	
 	t = sc->scaner(l);
-	if (!(t == Tnot || t == Tminus || t == Tplus)) {
-		uk1 = sc->GetUK();
-		line1 = sc->GetLine();
-	}
+	if (!(t == Tnot || t == Tminus || t == Tplus))
+		sc->SetUK(uk1);
 	expression8();
 }
 void TDiagram::expression8()
 {
+	int uk1 = sc->GetUK();
 	LEX l;
 	int t;
-	expression8();
-	int uk1 = sc->GetUK();
-	int line1 = sc->GetLine();
+	
 	t = sc->scaner(l);
 	switch (t)
 	{
 	case Tconst10:
 	case Tconst16:
+		break;
 	case Tminusminus:
 	case Tplusplus:
 		if ((t = sc->scaner(l)) != Tid)
-			sc->paintError("(callFunction) Ожидался идентификатор\0", l);
+			sc->paintError("(expression) Ожидался идентификатор\0", l);
 	case Tid:		
 		uk1 = sc->GetUK();
-		line1 = sc->GetLine();
 		t = sc->scaner(l);
 		if (!(t == Tplusplus || t == Tminusminus)) {
-			uk1 = sc->GetUK();
-			line1 = sc->GetLine();
+			sc->SetUK(uk1);		
 		}
 		break;
 	case Topenbracket:
-		expression();
 		if ((t = sc->scaner(l)) != Tclosebracket)
-			sc->paintError("(callFunction) Ожидался символ ')'\0", l);
+			sc->paintError("(expression) Ожидался символ ')'\0", l);
 		break;
 	default:
-		sc->paintError("(callFunction) Ожидалось выражение\0", l);
+		sc->paintError("(expression) Ожидалось выражение\0", l);
 	}
 
 }

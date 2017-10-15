@@ -58,6 +58,8 @@ void TScaner::paintError(char* error, char* l)
 		cout << "Ошибка: " << error << endl;
 	else
 		cout << "Ошибка: " << error << ". Неверный символ: " << l << endl;
+	system("pause");
+	exit(0);
 }
 
 
@@ -197,7 +199,7 @@ start:
 		{
 			lex[len++] = text[uk++];
 			pos++;
-			return Tassignment;
+			return Tequal;
 		}
 		return Tassignment;
 	}

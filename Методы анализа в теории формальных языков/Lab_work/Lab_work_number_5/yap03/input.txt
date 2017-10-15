@@ -1,25 +1,29 @@
-int64 mas[1];
-void main()
-{
-
-}
-//sdsadas
-a+b==78
+//int mas[1] = {1,23,56};
+a + b == 78;
 /*sdsadsadsa
 sdasd	sad
 fw* 		/fewf
 */
-
-for(int o = 1; o < 2; o += 1)
+int abc = trq(123156, )); //5125156
+/*****12512 at asyg adtgdyh*/
+for(int o = 1; o < 2; ++o)
 {
 	int z = 32;
 }
-0X989FFF;
-int;		
+
+0X989FFF;		
 115456454
 8798787987987
 êöóàâû
 #6r73yhuwdf
 32r4uriej	   rewoirj3krj
   4re fd
-////
+////int64 mas[1];
+void main()
+{
+	tyr2();
+	{1,23,56};
+	a--;
+	zz + 11 + 22;
+}
+//sdsadas
