@@ -15,6 +15,8 @@ public:
 	void SetUK(int _uk);
 	int GetLine();
 	void SetLine(int _line);
+	void SetPos(int _pos);
+	int GetPos();
 private:
 	Module  text;
 	int uk;

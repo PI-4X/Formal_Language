@@ -1,6 +1,7 @@
 #include "TScaner.h"
 #include "TDiagram.h"
 using namespace std;
+
 int main()
 {	
 	setlocale(2, "");

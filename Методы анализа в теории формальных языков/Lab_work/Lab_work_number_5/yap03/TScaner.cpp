@@ -23,16 +23,22 @@ int TScaner::GetUK()
 {
 	return uk;
 }
-
 void TScaner::SetUK(int _uk)
 {
 	uk = _uk;
+}
+void TScaner::SetPos(int _pos)
+{
+	pos = _pos;
+}
+int TScaner::GetPos()
+{
+	return pos;
 }
 int TScaner::GetLine()
 {
 	return line;
 }
-
 void TScaner::SetLine(int _line)
 {
 	line = _line;
@@ -58,6 +64,8 @@ void TScaner::paintError(char* error, char* l)
 		cout << "Ошибка: " << error << endl;
 	else
 		cout << "Ошибка: " << error << ". Неверный символ: " << l << endl;
+
+	cout << "Строка: " << this->line << ". Символ:" << --(this->pos)  << endl;
 	system("pause");
 	exit(0);
 }
@@ -162,8 +170,7 @@ start:
 
 	if (text[uk] == '0')
 	{
-		lex[len++] = text[uk++];
-		pos++;
+		
 		if (text[uk] >= '0' && text[uk] <= '9') goto number;
 		if (text[uk] == 'x' || text[uk] == 'X') {
 			lex[len++] = text[uk++];
@@ -185,6 +192,8 @@ start:
 			if (len >= 9) return Terror;
 			return Tconst16;
 		}
+		lex[len++] = text[uk++];
+		pos++;
 	}
 
 

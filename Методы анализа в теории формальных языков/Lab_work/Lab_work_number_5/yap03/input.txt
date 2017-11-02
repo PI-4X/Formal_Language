@@ -1,29 +1,47 @@
-//int mas[1] = {1,23,56};
-a + b == 78;
-/*sdsadsadsa
-sdasd	sad
-fw* 		/fewf
-*/
-int abc = trq(123156, )); //5125156
-/*****12512 at asyg adtgdyh*/
-for(int o = 1; o < 2; ++o)
+void countBall(int size)
 {
-	int z = 32;
+	int a = size;
+	return;
+}
+void main() 
+{ 
+for(int i = 0; i < (5*2); i++)
+{
+	countBall(23);
+}
+mas[2] = (3 * _2);
+a = b + 2;
+int b; 
+;;;;;;;;;;;;;
+z = 1 + 5 * 2;
+int ma[2] = {1,7,9}; 
+
+int64 mas[52]; 
+
+K=3-4-5-6/(-7)---()-u*uuu**))));;  
+{}{]} 
+
+
+{ 
+tyr2();
+ 
+{ 
+tyr2(); 
+{a = 1; b = 23; z = 5 + 6;}; 
+a--; 
+zz + 11 + 22; 
+} 
+
+//int f tyr2(); 
+//{1,23,56}; 
+//a--; 
+//zz + 11 + 22; 
+
 }
 
-0X989FFF;		
-115456454
-8798787987987
-êöóàâû
-#6r73yhuwdf
-32r4uriej	   rewoirj3krj
-  4re fd
-////int64 mas[1];
-void main()
-{
-	tyr2();
-	{1,23,56};
-	a--;
-	zz + 11 + 22;
+//int fi(){} 
+//int yuyuy()((({} 
+
 }
+
 //sdsadas
